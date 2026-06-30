@@ -1,0 +1,239 @@
+import {
+  formatDate,
+  formatDateTime,
+  nonZeroEntries,
+  normalizeSearch,
+  titleFromKey,
+  vintageLabel,
+} from "./utils.js";
+
+function element(tag, className, text) {
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  if (text !== undefined) node.textContent = text;
+  return node;
+}
+
+export function createListController({
+  container,
+  emptyState,
+  resultCount,
+  searchInput,
+  typeSelect,
+  vintageSelect,
+  onOpen,
+}) {
+  let sheets = [];
+  let objectUrls = [];
+
+  function revokeUrls() {
+    objectUrls.forEach((url) => URL.revokeObjectURL(url));
+    objectUrls = [];
+  }
+
+  function filteredSheets() {
+    const term = normalizeSearch(searchInput.value);
+    const type = typeSelect.value;
+    const vintage = vintageSelect.value;
+    return sheets.filter((sheet) => {
+      const matchesTerm = !term
+        || sheet.vinhoBusca?.includes(term)
+        || sheet.produtorBusca?.includes(term)
+        || normalizeSearch(sheet.vinho).includes(term)
+        || normalizeSearch(sheet.produtor).includes(term);
+      const matchesType = !type || sheet.tipologia === type;
+      const matchesVintage = !vintage
+        || (vintage === "none" ? sheet.safra === null : Number(sheet.safra) === Number(vintage));
+      return matchesTerm && matchesType && matchesVintage;
+    });
+  }
+
+  function createCard(sheet) {
+    const article = element("article", "wine-card");
+    const button = element("button", "wine-card-button");
+    button.type = "button";
+    button.setAttribute("aria-label", `Abrir ficha de ${sheet.vinho}, ${sheet.produtor}`);
+    button.addEventListener("click", () => onOpen(sheet.id));
+
+    let visual;
+    if (sheet.foto instanceof Blob) {
+      const url = URL.createObjectURL(sheet.foto);
+      objectUrls.push(url);
+      visual = element("img", "wine-thumb");
+      visual.src = url;
+      visual.alt = "";
+      visual.loading = "lazy";
+    } else {
+      visual = element("div", "wine-thumb wine-thumb-placeholder", "R");
+      visual.setAttribute("aria-hidden", "true");
+    }
+
+    const copy = element("div", "wine-card-copy");
+    copy.append(
+      element("h3", "", sheet.vinho),
+      element("p", "", sheet.produtor),
+    );
+    const meta = element("div", "card-meta");
+    [
+      sheet.tipologia,
+      vintageLabel(sheet.safra),
+      formatDate(sheet.data),
+    ].forEach((value) => meta.append(element("span", "tag", value)));
+    copy.append(meta);
+    button.append(visual, copy);
+    article.append(button);
+    return article;
+  }
+
+  function render() {
+    revokeUrls();
+    const filtered = filteredSheets();
+    container.replaceChildren(...filtered.map(createCard));
+    container.setAttribute("aria-busy", "false");
+    resultCount.textContent = `${filtered.length} ${filtered.length === 1 ? "ficha" : "fichas"}`;
+    emptyState.classList.toggle("hidden", filtered.length > 0);
+    container.classList.toggle("hidden", filtered.length === 0);
+
+    const hasFilters = searchInput.value || typeSelect.value || vintageSelect.value;
+    const title = emptyState.querySelector("#empty-title");
+    const copy = emptyState.querySelector("#empty-copy");
+    const action = emptyState.querySelector("#empty-new-sheet");
+    if (hasFilters) {
+      title.textContent = "Nenhuma ficha encontrada";
+      copy.textContent = "Tente mudar ou limpar os filtros.";
+      action.classList.add("hidden");
+    } else {
+      title.textContent = "Nenhuma ficha por aqui";
+      copy.textContent = "Comece registrando sua primeira degustação.";
+      action.classList.remove("hidden");
+    }
+  }
+
+  return {
+    setSheets(nextSheets) {
+      sheets = nextSheets;
+      render();
+    },
+    render,
+    destroy: revokeUrls,
+  };
+}
+
+function dataItem(label, value) {
+  const wrapper = document.createElement("div");
+  wrapper.append(element("dt", "", label), element("dd", "", value || "Não informado"));
+  return wrapper;
+}
+
+function assessmentBlock(title, values) {
+  const wrapper = element("div", "detail-assessment");
+  wrapper.append(element("h3", "", title));
+  const entries = nonZeroEntries(values);
+  if (!entries.length) {
+    wrapper.append(element("p", "detail-empty", "Não avaliado"));
+    return wrapper;
+  }
+  const list = element("ul", "assessment-list");
+  entries.forEach(([key, value]) => {
+    const item = element(
+      "li",
+      `assessment-chip${value === -1 ? " negative" : ""}`,
+      `${value === -1 ? "−" : "+"} ${titleFromKey(key)}`,
+    );
+    list.append(item);
+  });
+  wrapper.append(list);
+  return wrapper;
+}
+
+function detailCard(title, children) {
+  const card = element("section", "detail-card");
+  card.append(element("h2", "", title), ...children);
+  return card;
+}
+
+export function renderDetails(container, sheet, { onEdit, onDelete }) {
+  const urls = [];
+  const hero = element("header", `detail-hero${sheet.foto instanceof Blob ? " has-photo" : ""}`);
+  if (sheet.foto instanceof Blob) {
+    const url = URL.createObjectURL(sheet.foto);
+    urls.push(url);
+    const photo = element("img", "detail-photo");
+    photo.src = url;
+    photo.alt = `Foto do rótulo de ${sheet.vinho}`;
+    hero.append(photo);
+  }
+
+  const heading = element("div", "detail-heading");
+  heading.append(
+    element("p", "eyebrow", `${sheet.tipologia} · ${vintageLabel(sheet.safra)}`),
+    element("h1", "", sheet.vinho),
+    element("p", "", sheet.produtor),
+  );
+  heading.querySelector("h1").id = "detail-title";
+  const actions = element("div", "detail-actions");
+  const edit = element("button", "button button-secondary", "Editar");
+  edit.type = "button";
+  edit.addEventListener("click", onEdit);
+  const remove = element("button", "button button-danger", "Excluir");
+  remove.type = "button";
+  remove.addEventListener("click", onDelete);
+  actions.append(edit, remove);
+  heading.append(actions);
+  hero.append(heading);
+
+  const generalData = element("dl", "detail-data");
+  generalData.append(
+    dataItem("Lugar", sheet.lugar),
+    dataItem("Data", formatDate(sheet.data)),
+    dataItem("Tipologia", sheet.tipologia),
+    dataItem("Álcool", sheet.alcool === null ? "Não informado" : `${sheet.alcool}%`),
+    dataItem("Safra", vintageLabel(sheet.safra)),
+    dataItem("Atualizada em", formatDateTime(sheet.updatedAt)),
+  );
+
+  const perlage = sheet.visual?.perlage ?? {};
+  const perlageData = element("dl", "detail-data");
+  perlageData.append(
+    dataItem("Contínuo", perlage.continuo ? `${perlage.continuo}/5` : "Não avaliado"),
+    dataItem("Fino", perlage.fino ? `${perlage.fino}/5` : "Não avaliado"),
+    dataItem("Longo", perlage.longo ? `${perlage.longo}/5` : "Não avaliado"),
+  );
+
+  const finalChildren = [
+    assessmentBlock("Descritores", sheet.final?.descritores),
+    assessmentBlock("Equilíbrio", sheet.final?.equilibrio),
+    assessmentBlock("Evolução", sheet.final?.evolucao),
+  ];
+  if (sheet.final?.perfume) {
+    const perfume = element("p", "");
+    const strong = element("strong", "", "Perfume de: ");
+    perfume.append(strong, document.createTextNode(sheet.final.perfume));
+    finalChildren.push(perfume);
+  }
+
+  const sections = element("div", "detail-sections");
+  sections.append(
+    detailCard("Informações gerais", [generalData]),
+    detailCard("Exame visual", [
+      assessmentBlock("Cor", sheet.visual?.cor),
+      assessmentBlock("Limpidez", sheet.visual?.limpidez),
+      element("h3", "", "Perlage"),
+      perlageData,
+    ]),
+    detailCard("Exame olfativo", [
+      assessmentBlock("Qualidade", sheet.olfativo?.qualidade),
+      assessmentBlock("Intensidade", sheet.olfativo?.intensidade),
+      assessmentBlock("Duração", sheet.olfativo?.duracao),
+    ]),
+    detailCard("Gosto e tato", [
+      assessmentBlock("Sabores", sheet.gosto?.sabores),
+      assessmentBlock("Alcoolicidade", sheet.tato?.alcoolicidade),
+      assessmentBlock("Tanino", sheet.tato?.tanino),
+    ]),
+    detailCard("Retrogosto, retrolfato e evolução", finalChildren),
+  );
+
+  container.replaceChildren(hero, sections);
+  return () => urls.forEach((url) => URL.revokeObjectURL(url));
+}
