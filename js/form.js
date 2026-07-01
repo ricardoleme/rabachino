@@ -101,6 +101,65 @@ function setPerlage(form, values = {}) {
   });
 }
 
+function updateFinalRating(container) {
+  const checked = container.querySelector('input[name="final-rating"]:checked');
+  const selected = checked ? Number(checked.value) : 0;
+  container.querySelectorAll(".star-rating label").forEach((label) => {
+    label.classList.toggle("selected", Number(label.dataset.value) <= selected);
+  });
+}
+
+function buildFinalRating(container) {
+  const options = document.createElement("div");
+  options.className = "star-rating";
+  options.setAttribute("role", "radiogroup");
+  options.setAttribute("aria-label", "Avaliação final");
+
+  for (let value = 1; value <= 5; value += 1) {
+    const input = document.createElement("input");
+    input.className = "visually-hidden";
+    input.type = "radio";
+    input.name = "final-rating";
+    input.id = `final-rating-${value}`;
+    input.value = String(value);
+    input.setAttribute("aria-label", `${value} ${value === 1 ? "estrela" : "estrelas"}`);
+
+    const label = document.createElement("label");
+    label.htmlFor = input.id;
+    label.dataset.value = String(value);
+    label.textContent = "★";
+    label.title = `${value} ${value === 1 ? "estrela" : "estrelas"}`;
+    options.append(input, label);
+  }
+
+  const clear = document.createElement("button");
+  clear.type = "button";
+  clear.className = "clear-rating";
+  clear.title = "Limpar avaliação final";
+  clear.setAttribute("aria-label", "Limpar avaliação final");
+  clear.textContent = "×";
+  clear.addEventListener("click", () => {
+    options.querySelectorAll("input").forEach((input) => { input.checked = false; });
+    updateFinalRating(container);
+    options.dispatchEvent(new Event("change", { bubbles: true }));
+  });
+  options.addEventListener("change", () => updateFinalRating(container));
+  container.className = "final-rating-control";
+  container.replaceChildren(options, clear);
+}
+
+function readFinalRating(form) {
+  const checked = form.querySelector('input[name="final-rating"]:checked');
+  return checked ? Number(checked.value) : null;
+}
+
+function setFinalRating(form, value) {
+  form.querySelectorAll('input[name="final-rating"]').forEach((input) => {
+    input.checked = Number(input.value) === Number(value);
+  });
+  updateFinalRating(form.querySelector("#final-rating-control"));
+}
+
 function emptyPhotoPreview(container) {
   const image = document.createElement("img");
   image.src = NO_PHOTO_SOURCE;
@@ -147,6 +206,7 @@ export function createFormController({
 
   initializeTriGroups(form);
   buildPerlage(form.querySelector("#perlage-ratings"));
+  buildFinalRating(form.querySelector("#final-rating-control"));
   populateVintageSelect(elements.vintage);
 
   function revokePreview() {
@@ -306,6 +366,7 @@ export function createFormController({
         perfume: elements.perfume.value.trim(),
         equilibrio: tri.final?.equilibrio ?? {},
         evolucao: tri.final?.evolucao ?? {},
+        avaliacao: readFinalRating(form),
       },
       createdAt: sourceSheet?.createdAt ?? now,
       updatedAt: now,
@@ -422,6 +483,7 @@ export function createFormController({
     renderColor(lastType, sheet?.visual?.cor);
     setTriGroups(form, sheet ?? {});
     setPerlage(form, sheet?.visual?.perlage);
+    setFinalRating(form, sheet?.final?.avaliacao);
     photoBlob = sheet?.foto ?? null;
     photoName = sheet?.fotoNome ?? "";
     photoType = sheet?.fotoTipo ?? "";

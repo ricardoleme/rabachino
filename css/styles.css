@@ -388,13 +388,40 @@ legend {
 }
 
 .wine-card {
+  --card-background: var(--paper);
+  --card-border: var(--line);
+  --card-tag-background: var(--wine-50);
   position: relative;
   overflow: hidden;
-  border: 1px solid var(--line);
+  border: 1px solid var(--card-border);
   border-radius: var(--radius);
-  background: var(--paper);
+  background: var(--card-background);
   box-shadow: 0 8px 20px rgba(59, 13, 30, 0.06);
   transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.wine-card-branco {
+  --card-background: #fff9e8;
+  --card-border: #d8bd72;
+  --card-tag-background: #fffdf5;
+}
+
+.wine-card-laranja {
+  --card-background: #fff0df;
+  --card-border: #d89452;
+  --card-tag-background: #fff8ef;
+}
+
+.wine-card-rose {
+  --card-background: #fbe8ee;
+  --card-border: #ca8299;
+  --card-tag-background: #fff6f8;
+}
+
+.wine-card-tinto {
+  --card-background: #f1dde4;
+  --card-border: #96506a;
+  --card-tag-background: #fff4f7;
 }
 
 .wine-card:hover {
@@ -456,7 +483,7 @@ legend {
   align-items: center;
   padding: 0.25rem 0.5rem;
   border-radius: 99rem;
-  background: var(--wine-50);
+  background: var(--card-tag-background, var(--wine-50));
   color: var(--wine-800);
   font-size: 0.72rem;
   font-weight: 700;
@@ -755,6 +782,58 @@ legend {
   color: var(--muted);
   cursor: pointer;
   font-size: 1.2rem;
+}
+
+.final-rating-control {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.star-rating {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.star-rating label {
+  display: grid;
+  width: 2.75rem;
+  min-height: 2.75rem;
+  place-items: center;
+  border: 1px solid #ccbfc1;
+  border-radius: 50%;
+  background: #fff;
+  color: #8a7d81;
+  cursor: pointer;
+  font-size: 1.45rem;
+}
+
+.star-rating label.selected {
+  border-color: #9a6818;
+  background: #fff3c7;
+  color: #8a5800;
+}
+
+.star-rating input:focus-visible + label {
+  outline: 3px solid #d69a3c;
+  outline-offset: 3px;
+}
+
+.star-display {
+  color: #7b5000;
+  font-size: 1.15rem;
+  letter-spacing: 0.08em;
+  line-height: 1;
+}
+
+.card-rating {
+  margin: -0.25rem 0 0.75rem;
+}
+
+.detail-rating {
+  margin-top: 0.9rem;
+  font-size: 1.5rem;
 }
 
 .perfume-field {

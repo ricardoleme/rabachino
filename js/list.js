@@ -16,6 +16,42 @@ function element(tag, className, text) {
   return node;
 }
 
+const CARD_TYPE_CLASSES = {
+  Branco: "wine-card-branco",
+  Laranja: "wine-card-laranja",
+  "Rosé": "wine-card-rose",
+  Tinto: "wine-card-tinto",
+};
+
+function normalizedRating(value) {
+  const rating = Number(value);
+  return Number.isInteger(rating) && rating >= 1 && rating <= 5 ? rating : null;
+}
+
+function starDisplay(value, className = "") {
+  const rating = normalizedRating(value);
+  const wrapper = element("div", `star-display${className ? ` ${className}` : ""}`);
+  wrapper.textContent = rating
+    ? `${"★".repeat(rating)}${"☆".repeat(5 - rating)}`
+    : "☆☆☆☆☆";
+  wrapper.setAttribute(
+    "aria-label",
+    rating
+      ? `Avaliação final: ${rating} de 5 estrelas`
+      : "Avaliação final não informada",
+  );
+  return wrapper;
+}
+
+function finalRatingBlock(value) {
+  const wrapper = element("div", "detail-assessment");
+  wrapper.append(
+    element("h3", "", "Avaliação final"),
+    starDisplay(value, "detail-rating"),
+  );
+  return wrapper;
+}
+
 export function createListController({
   container,
   emptyState,
@@ -51,10 +87,17 @@ export function createListController({
   }
 
   function createCard(sheet) {
-    const article = element("article", "wine-card");
+    const typeClass = CARD_TYPE_CLASSES[sheet.tipologia] ?? "";
+    const article = element("article", `wine-card${typeClass ? ` ${typeClass}` : ""}`);
     const button = element("button", "wine-card-button");
     button.type = "button";
-    button.setAttribute("aria-label", `Abrir ficha de ${sheet.vinho}, ${sheet.produtor}`);
+    const rating = normalizedRating(sheet.final?.avaliacao);
+    button.setAttribute(
+      "aria-label",
+      `Abrir ficha de ${sheet.vinho}, ${sheet.produtor}${
+        rating ? `, avaliação final ${rating} de 5 estrelas` : ""
+      }`,
+    );
     button.addEventListener("click", () => onOpen(sheet.id));
 
     let visual;
@@ -75,6 +118,7 @@ export function createListController({
     copy.append(
       element("h3", "", sheet.vinho),
       element("p", "", sheet.produtor),
+      starDisplay(sheet.final?.avaliacao, "card-rating"),
     );
     const meta = element("div", "card-meta");
     [
@@ -212,6 +256,7 @@ export function renderDetails(container, sheet, { onEdit, onDelete }) {
     assessmentBlock("Descritores", sheet.final?.descritores),
     assessmentBlock("Equilíbrio", sheet.final?.equilibrio),
     assessmentBlock("Evolução", sheet.final?.evolucao),
+    finalRatingBlock(sheet.final?.avaliacao),
   ];
   if (sheet.final?.perfume) {
     const perfume = element("p", "");
