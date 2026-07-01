@@ -52,6 +52,15 @@ function finalRatingBlock(value) {
   return wrapper;
 }
 
+function observationsBlock(value) {
+  const wrapper = element("div", "detail-assessment");
+  wrapper.append(
+    element("h3", "", "Observações"),
+    element("p", "detail-observations", value || "Não informado"),
+  );
+  return wrapper;
+}
+
 export function createListController({
   container,
   emptyState,
@@ -256,7 +265,6 @@ export function renderDetails(container, sheet, { onEdit, onDelete }) {
     assessmentBlock("Descritores", sheet.final?.descritores),
     assessmentBlock("Equilíbrio", sheet.final?.equilibrio),
     assessmentBlock("Evolução", sheet.final?.evolucao),
-    finalRatingBlock(sheet.final?.avaliacao),
   ];
   if (sheet.final?.perfume) {
     const perfume = element("p", "");
@@ -264,6 +272,10 @@ export function renderDetails(container, sheet, { onEdit, onDelete }) {
     perfume.append(strong, document.createTextNode(sheet.final.perfume));
     finalChildren.push(perfume);
   }
+  finalChildren.push(
+    observationsBlock(sheet.final?.observacoes),
+    finalRatingBlock(sheet.final?.avaliacao),
+  );
 
   const sections = element("div", "detail-sections");
   sections.append(

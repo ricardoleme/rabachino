@@ -66,7 +66,8 @@ body {
 
 button,
 input,
-select {
+select,
+textarea {
   font: inherit;
 }
 
@@ -341,7 +342,8 @@ legend {
 }
 
 .field input:not([type="file"]),
-.field select {
+.field select,
+.field textarea {
   width: 100%;
   min-height: 2.85rem;
   padding: 0.7rem 0.8rem;
@@ -351,12 +353,14 @@ legend {
   color: var(--ink);
 }
 
-.field input::placeholder {
+.field input::placeholder,
+.field textarea::placeholder {
   color: #9b8d91;
 }
 
 .field input:focus,
-.field select:focus {
+.field select:focus,
+.field textarea:focus {
   border-color: var(--wine-600);
 }
 
@@ -839,6 +843,19 @@ legend {
 .perfume-field {
   max-width: 35rem;
   padding: 1rem 0;
+}
+
+.observations-field {
+  padding: 1rem 0;
+}
+
+.observations-field textarea {
+  min-height: 8rem;
+  resize: vertical;
+}
+
+.detail-observations {
+  white-space: pre-wrap;
 }
 
 .form-actions {

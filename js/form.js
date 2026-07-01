@@ -189,6 +189,7 @@ export function createFormController({
     photoPreview: form.querySelector("#photo-preview"),
     removePhoto: form.querySelector("#remove-photo"),
     perfume: form.querySelector("#perfume"),
+    observations: form.querySelector("#observations"),
     colorGroup: form.querySelector("#color-group"),
     colorHint: form.querySelector("#color-hint"),
     summary: form.querySelector("#form-error-summary"),
@@ -366,6 +367,7 @@ export function createFormController({
         perfume: elements.perfume.value.trim(),
         equilibrio: tri.final?.equilibrio ?? {},
         evolucao: tri.final?.evolucao ?? {},
+        observacoes: elements.observations.value.trim(),
         avaliacao: readFinalRating(form),
       },
       createdAt: sourceSheet?.createdAt ?? now,
@@ -479,6 +481,7 @@ export function createFormController({
       ? "none"
       : String(sheet.safra);
     elements.perfume.value = sheet?.final?.perfume ?? "";
+    elements.observations.value = sheet?.final?.observacoes ?? "";
     lastType = elements.type.value;
     renderColor(lastType, sheet?.visual?.cor);
     setTriGroups(form, sheet ?? {});
