@@ -439,8 +439,8 @@ export function createFormController({
   form.querySelectorAll(".clear-rating").forEach((button) => {
     button.addEventListener("click", () => { dirty = true; });
   });
-  form.querySelector("#cancel-form").addEventListener("click", attemptCancel);
-  document.querySelector("#form-back").addEventListener("click", attemptCancel);
+  form.querySelector("#cancel-form").addEventListener("click", () => attemptCancel());
+  document.querySelector("#form-back").addEventListener("click", () => attemptCancel());
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
