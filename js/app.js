@@ -176,6 +176,10 @@ document.querySelector("#detail-back").addEventListener("click", () => {
   showView("home");
 });
 
+window.addEventListener("load", () => {
+  document.querySelector("#new-sheet").focus({ preventScroll: true });
+}, { once: true });
+
 window.addEventListener("beforeunload", (event) => {
   if (!formController.isDirty()) return;
   event.preventDefault();

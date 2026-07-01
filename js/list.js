@@ -1,6 +1,8 @@
 import {
+  formatCurrency,
   formatDate,
   formatDateTime,
+  NO_PHOTO_SOURCE,
   nonZeroEntries,
   normalizeSearch,
   titleFromKey,
@@ -64,8 +66,9 @@ export function createListController({
       visual.alt = "";
       visual.loading = "lazy";
     } else {
-      visual = element("div", "wine-thumb wine-thumb-placeholder", "R");
-      visual.setAttribute("aria-hidden", "true");
+      visual = element("img", "wine-thumb");
+      visual.src = NO_PHOTO_SOURCE;
+      visual.alt = "";
     }
 
     const copy = element("div", "wine-card-copy");
@@ -154,15 +157,18 @@ function detailCard(title, children) {
 
 export function renderDetails(container, sheet, { onEdit, onDelete }) {
   const urls = [];
-  const hero = element("header", `detail-hero${sheet.foto instanceof Blob ? " has-photo" : ""}`);
+  const hero = element("header", "detail-hero has-photo");
+  const photo = element("img", "detail-photo");
   if (sheet.foto instanceof Blob) {
     const url = URL.createObjectURL(sheet.foto);
     urls.push(url);
-    const photo = element("img", "detail-photo");
     photo.src = url;
     photo.alt = `Foto do rótulo de ${sheet.vinho}`;
-    hero.append(photo);
+  } else {
+    photo.src = NO_PHOTO_SOURCE;
+    photo.alt = `Nenhuma foto cadastrada para ${sheet.vinho}`;
   }
+  hero.append(photo);
 
   const heading = element("div", "detail-heading");
   heading.append(
@@ -188,6 +194,8 @@ export function renderDetails(container, sheet, { onEdit, onDelete }) {
     dataItem("Data", formatDate(sheet.data)),
     dataItem("Tipologia", sheet.tipologia),
     dataItem("Álcool", sheet.alcool === null ? "Não informado" : `${sheet.alcool}%`),
+    dataItem("Preço", formatCurrency(sheet.preco)),
+    dataItem("Uvas", sheet.uvas),
     dataItem("Safra", vintageLabel(sheet.safra)),
     dataItem("Atualizada em", formatDateTime(sheet.updatedAt)),
   );

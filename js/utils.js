@@ -1,4 +1,5 @@
 export const CURRENT_YEAR = new Date().getFullYear();
+export const NO_PHOTO_SOURCE = "assets/images/sem-foto.png";
 
 export function localToday() {
   const now = new Date();
@@ -34,6 +35,14 @@ export function formatDateTime(value) {
 
 export function vintageLabel(value) {
   return value === null || value === "" || value === undefined ? "Sem Safra" : String(value);
+}
+
+export function formatCurrency(value) {
+  if (value === null || value === undefined || value === "") return "Não informado";
+  return new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  }).format(Number(value));
 }
 
 export function debounce(callback, delay = 200) {
@@ -75,6 +84,11 @@ export function titleFromKey(key) {
     amareloPalido: "Amarelo Pálido",
     amareloOuro: "Amarelo Ouro",
     amareloEsverdeado: "Amarelo Esverdeado",
+    douradoIntenso: "Dourado intenso",
+    ambar: "Âmbar",
+    cobre: "Cobre",
+    ocre: "Ocre",
+    palha: "Palha",
     vermelhoClaro: "Vermelho Claro",
     rosa: "Rosa",
     elegante: "Elegante",

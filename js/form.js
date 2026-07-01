@@ -1,6 +1,7 @@
 import {
   createId,
   localToday,
+  NO_PHOTO_SOURCE,
   normalizeSearch,
   optimizeImage,
   populateVintageSelect,
@@ -18,6 +19,13 @@ const COLOR_OPTIONS = {
     { key: "amareloPalido", label: "Amarelo Pálido" },
     { key: "amareloOuro", label: "Amarelo Ouro" },
     { key: "amareloEsverdeado", label: "Amarelo Esverdeado" },
+  ],
+  Laranja: [
+    { key: "douradoIntenso", label: "Dourado intenso" },
+    { key: "ambar", label: "Âmbar" },
+    { key: "cobre", label: "Cobre" },
+    { key: "ocre", label: "Ocre" },
+    { key: "palha", label: "Palha" },
   ],
   Tinto: [
     { key: "rubi", label: "Rubi" },
@@ -94,12 +102,10 @@ function setPerlage(form, values = {}) {
 }
 
 function emptyPhotoPreview(container) {
-  const symbol = document.createElement("span");
-  symbol.setAttribute("aria-hidden", "true");
-  symbol.textContent = "⌑";
-  const copy = document.createElement("small");
-  copy.textContent = "Nenhuma foto";
-  container.replaceChildren(symbol, copy);
+  const image = document.createElement("img");
+  image.src = NO_PHOTO_SOURCE;
+  image.alt = "Nenhuma foto do vinho adicionada";
+  container.replaceChildren(image);
 }
 
 export function createFormController({
@@ -117,6 +123,8 @@ export function createFormController({
     date: form.querySelector("#date"),
     type: form.querySelector("#wine-type"),
     alcohol: form.querySelector("#alcohol"),
+    price: form.querySelector("#price"),
+    grapes: form.querySelector("#grapes"),
     vintage: form.querySelector("#vintage"),
     photo: form.querySelector("#photo"),
     photoPreview: form.querySelector("#photo-preview"),
@@ -234,6 +242,13 @@ export function createFormController({
       }
     }
 
+    if (elements.price.value !== "") {
+      const price = Number(elements.price.value);
+      if (!Number.isFinite(price) || price < 0) {
+        errors.push(setError(elements.price, "Informe um preço igual ou maior que zero."));
+      }
+    }
+
     if (errors.length) {
       const strong = document.createElement("strong");
       strong.textContent = "Revise os campos destacados.";
@@ -263,6 +278,8 @@ export function createFormController({
       vinhoBusca: normalizeSearch(wine),
       tipologia: elements.type.value,
       alcool: elements.alcohol.value === "" ? null : Number(elements.alcohol.value),
+      preco: elements.price.value === "" ? null : Number(elements.price.value),
+      uvas: elements.grapes.value.trim(),
       produtor: producer,
       produtorBusca: normalizeSearch(producer),
       safra: vintage,
@@ -395,6 +412,8 @@ export function createFormController({
     elements.date.value = sheet?.data ?? localToday();
     elements.type.value = sheet?.tipologia ?? "";
     elements.alcohol.value = sheet?.alcool ?? "";
+    elements.price.value = sheet?.preco ?? "";
+    elements.grapes.value = sheet?.uvas ?? "";
     elements.vintage.value = sheet?.safra === null || sheet?.safra === undefined
       ? "none"
       : String(sheet.safra);

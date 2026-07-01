@@ -423,14 +423,6 @@ legend {
   background: var(--wine-100);
 }
 
-.wine-thumb-placeholder {
-  display: grid;
-  place-items: center;
-  color: var(--wine-700);
-  font-family: var(--font-heading);
-  font-size: 2rem;
-}
-
 .wine-card-copy {
   min-width: 0;
   padding: 1rem 1rem 1rem 0;
@@ -611,15 +603,6 @@ legend {
   width: 100%;
   height: 100%;
   object-fit: cover;
-}
-
-.photo-preview span {
-  font-size: 2rem;
-}
-
-.photo-preview small {
-  margin-top: -1.5rem;
-  font-size: 0.65rem;
 }
 
 .photo-actions {
