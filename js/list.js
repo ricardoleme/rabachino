@@ -234,10 +234,14 @@ export function renderDetails(container, sheet, { onEdit, onDelete }) {
   const edit = element("button", "button button-secondary", "Editar");
   edit.type = "button";
   edit.addEventListener("click", onEdit);
+  const print = element("button", "button button-secondary", "Imprimir / salvar PDF");
+  print.type = "button";
+  print.title = "Imprimir ou salvar a ficha em PDF";
+  print.addEventListener("click", () => window.print());
   const remove = element("button", "button button-danger", "Excluir");
   remove.type = "button";
   remove.addEventListener("click", onDelete);
-  actions.append(edit, remove);
+  actions.append(edit, print, remove);
   heading.append(actions);
   hero.append(heading);
 

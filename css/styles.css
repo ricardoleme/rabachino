@@ -1154,3 +1154,96 @@ legend {
     transition-duration: 0.01ms !important;
   }
 }
+
+@page {
+  size: A4 portrait;
+  margin: 12mm;
+}
+
+@media print {
+  html,
+  body {
+    min-width: 0;
+    background: #fff;
+    color: #000;
+    font-size: 9.5pt;
+  }
+
+  body {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .skip-link,
+  .app-header,
+  .view-toolbar,
+  .detail-actions,
+  .toast-region,
+  .confirm-dialog {
+    display: none !important;
+  }
+
+  #main-content,
+  .detail-view,
+  #detail-content {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  .detail-hero {
+    grid-template-columns: 48mm 1fr;
+    min-height: 48mm;
+    margin-bottom: 4mm;
+    border: 1px solid #6f1734;
+    border-radius: 3mm;
+    box-shadow: none;
+    break-inside: avoid;
+  }
+
+  .detail-photo,
+  .detail-hero.has-photo .detail-photo {
+    width: 48mm;
+    height: 48mm;
+    max-height: 48mm;
+    object-fit: cover;
+  }
+
+  .detail-heading {
+    align-self: center;
+    padding: 5mm;
+  }
+
+  .detail-heading h1 {
+    font-size: 24pt;
+  }
+
+  .detail-sections {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4mm;
+  }
+
+  .detail-card {
+    padding: 4mm;
+    border-radius: 3mm;
+    box-shadow: none;
+    break-inside: avoid;
+  }
+
+  .detail-card h2 {
+    margin-bottom: 3mm;
+    font-size: 14pt;
+  }
+
+  .detail-data {
+    gap: 3mm;
+  }
+
+  .assessment-chip {
+    border: 1px solid #b7d3c2;
+  }
+
+  .assessment-chip.negative {
+    border-color: #d7acb9;
+  }
+}
