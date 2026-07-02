@@ -202,10 +202,48 @@ function assessmentBlock(title, values) {
   return wrapper;
 }
 
-function detailCard(title, children) {
-  const card = element("section", "detail-card");
+function detailCard(title, children, printWidth = "") {
+  const card = element(
+    "section",
+    `detail-card${printWidth ? ` detail-card-print-${printWidth}` : ""}`,
+  );
   card.append(element("h2", "", title), ...children);
   return card;
+}
+
+function printDocumentTitle(wineName) {
+  const safeWineName = String(wineName ?? "")
+    .replace(/[\\/:*?"<>|\u0000-\u001f]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 80);
+  return safeWineName
+    ? `Ficha de degustação - ${safeWineName}`
+    : "Ficha de degustação";
+}
+
+function printSheet(sheet) {
+  const previousTitle = document.title;
+  let restored = false;
+
+  const restoreTitle = () => {
+    if (restored) return;
+    restored = true;
+    document.title = previousTitle;
+    window.removeEventListener("afterprint", restoreTitle);
+  };
+
+  document.title = printDocumentTitle(sheet.vinho);
+  window.addEventListener("afterprint", restoreTitle, { once: true });
+
+  try {
+    window.print();
+  } catch (error) {
+    restoreTitle();
+    throw error;
+  }
+
+  window.setTimeout(restoreTitle, 1000);
 }
 
 export function renderDetails(container, sheet, { onEdit, onDelete }) {
@@ -237,7 +275,7 @@ export function renderDetails(container, sheet, { onEdit, onDelete }) {
   const print = element("button", "button button-secondary", "Imprimir / salvar PDF");
   print.type = "button";
   print.title = "Imprimir ou salvar a ficha em PDF";
-  print.addEventListener("click", () => window.print());
+  print.addEventListener("click", () => printSheet(sheet));
   const remove = element("button", "button button-danger", "Excluir");
   remove.type = "button";
   remove.addEventListener("click", onDelete);
@@ -284,24 +322,24 @@ export function renderDetails(container, sheet, { onEdit, onDelete }) {
 
   const sections = element("div", "detail-sections");
   sections.append(
-    detailCard("Informações gerais", [generalData]),
+    detailCard("Informações gerais", [generalData], "half"),
     detailCard("Exame visual", [
       assessmentBlock("Cor", sheet.visual?.cor),
       assessmentBlock("Limpidez", sheet.visual?.limpidez),
       element("h3", "", "Perlage"),
       perlageData,
-    ]),
+    ], "half"),
     detailCard("Exame olfativo", [
       assessmentBlock("Qualidade", sheet.olfativo?.qualidade),
       assessmentBlock("Intensidade", sheet.olfativo?.intensidade),
       assessmentBlock("Duração", sheet.olfativo?.duracao),
-    ]),
+    ], "third"),
     detailCard("Gosto e tato", [
       assessmentBlock("Sabores", sheet.gosto?.sabores),
       assessmentBlock("Alcoolicidade", sheet.tato?.alcoolicidade),
       assessmentBlock("Tanino", sheet.tato?.tanino),
-    ]),
-    detailCard("Retrogosto, retrolfato e evolução", finalChildren),
+    ], "third"),
+    detailCard("Retrogosto, retrolfato e evolução", finalChildren, "third"),
   );
 
   container.replaceChildren(hero, sections);

@@ -1340,24 +1340,36 @@ legend {
   }
 
   .detail-sections {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 4mm;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 3mm;
+  }
+
+  .detail-card-print-half {
+    grid-column: span 3;
+  }
+
+  .detail-card-print-third {
+    grid-column: span 2;
   }
 
   .detail-card {
-    padding: 4mm;
+    padding: 3mm;
     border-radius: 3mm;
     box-shadow: none;
     break-inside: avoid;
   }
 
   .detail-card h2 {
-    margin-bottom: 3mm;
-    font-size: 14pt;
+    margin-bottom: 2mm;
+    font-size: 13pt;
+  }
+
+  .detail-card-print-third h2 {
+    font-size: 12pt;
   }
 
   .detail-data {
-    gap: 3mm;
+    gap: 2mm;
   }
 
   .assessment-chip {
