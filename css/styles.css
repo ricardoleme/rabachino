@@ -910,7 +910,10 @@ legend {
 .detail-photo {
   width: 100%;
   max-height: 24rem;
-  object-fit: cover;
+  padding: 0.75rem;
+  object-fit: contain;
+  object-position: center;
+  background: rgba(255, 255, 255, 0.92);
 }
 
 .detail-heading {
@@ -1255,7 +1258,7 @@ legend {
 
   .detail-hero.has-photo .detail-photo {
     height: 100%;
-    max-height: none;
+    max-height: 24rem;
   }
 
   .detail-heading {
@@ -1341,6 +1344,7 @@ legend {
     width: 48mm;
     height: 48mm;
     max-height: 48mm;
+    padding: 0;
     object-fit: cover;
   }
 
