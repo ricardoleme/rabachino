@@ -1345,7 +1345,9 @@ legend {
     height: 48mm;
     max-height: 48mm;
     padding: 0;
-    object-fit: cover;
+    object-fit: contain;
+    object-position: center;
+    background: #fff;
   }
 
   .detail-heading {
