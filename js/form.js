@@ -184,6 +184,7 @@ export function createFormController({
     alcohol: form.querySelector("#alcohol"),
     price: form.querySelector("#price"),
     grapes: form.querySelector("#grapes"),
+    pairing: form.querySelector("#pairing"),
     vintage: form.querySelector("#vintage"),
     photo: form.querySelector("#photo"),
     photoPreview: form.querySelector("#photo-preview"),
@@ -341,6 +342,7 @@ export function createFormController({
       alcool: elements.alcohol.value === "" ? null : Number(elements.alcohol.value),
       preco: elements.price.value === "" ? null : Number(elements.price.value),
       uvas: elements.grapes.value.trim(),
+      harmonizacao: elements.pairing.value.trim(),
       produtor: producer,
       produtorBusca: normalizeSearch(producer),
       safra: vintage,
@@ -477,6 +479,7 @@ export function createFormController({
     elements.alcohol.value = sheet?.alcool ?? "";
     elements.price.value = sheet?.preco ?? "";
     elements.grapes.value = sheet?.uvas ?? "";
+    elements.pairing.value = sheet?.harmonizacao ?? "";
     elements.vintage.value = sheet?.safra === null || sheet?.safra === undefined
       ? "none"
       : String(sheet.safra);

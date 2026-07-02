@@ -249,6 +249,7 @@ export function renderDetails(container, sheet, { onEdit, onDelete }) {
     dataItem("Álcool", sheet.alcool === null ? "Não informado" : `${sheet.alcool}%`),
     dataItem("Preço", formatCurrency(sheet.preco)),
     dataItem("Uvas", sheet.uvas),
+    dataItem("Harmonização", sheet.harmonizacao),
     dataItem("Safra", vintageLabel(sheet.safra)),
     dataItem("Atualizada em", formatDateTime(sheet.updatedAt)),
   );
