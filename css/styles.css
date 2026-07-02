@@ -408,6 +408,7 @@ legend {
   --card-tag-background: var(--wine-50);
   position: relative;
   overflow: hidden;
+  height: 12rem;
   border: 1px solid var(--card-border);
   border-radius: var(--radius);
   background: var(--card-background);
@@ -447,6 +448,7 @@ legend {
 .wine-card-button {
   display: grid;
   width: 100%;
+  height: 100%;
   grid-template-columns: 5.25rem 1fr;
   gap: 1rem;
   padding: 0;
@@ -457,12 +459,21 @@ legend {
   text-align: left;
 }
 
-.wine-thumb {
+.wine-thumb-frame {
+  position: relative;
   width: 5.25rem;
   height: 100%;
-  min-height: 8rem;
-  object-fit: cover;
-  background: var(--wine-100);
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.wine-thumb {
+  position: absolute;
+  inset: 0.5rem;
+  width: calc(100% - 1rem);
+  height: calc(100% - 1rem);
+  object-fit: contain;
+  object-position: center;
 }
 
 .wine-card-copy {
@@ -1217,6 +1228,10 @@ legend {
 
   .card-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .wine-card {
+    height: 10rem;
   }
 
   .form-card {

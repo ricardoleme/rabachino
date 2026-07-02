@@ -122,6 +122,8 @@ export function createListController({
       visual.src = NO_PHOTO_SOURCE;
       visual.alt = "";
     }
+    const visualFrame = element("div", "wine-thumb-frame");
+    visualFrame.append(visual);
 
     const copy = element("div", "wine-card-copy");
     copy.append(
@@ -136,7 +138,7 @@ export function createListController({
       formatDate(sheet.data),
     ].forEach((value) => meta.append(element("span", "tag", value)));
     copy.append(meta);
-    button.append(visual, copy);
+    button.append(visualFrame, copy);
     article.append(button);
     return article;
   }
