@@ -1,4 +1,12 @@
-import { deleteSheet, getAllSheets, getSheet, openDatabase, saveSheet } from "./db.js";
+import { createBackup, downloadBackup, readBackup } from "./backup.js";
+import {
+  deleteSheet,
+  getAllSheets,
+  getSheet,
+  openDatabase,
+  saveSheet,
+  saveSheets,
+} from "./db.js";
 import { createFormController } from "./form.js";
 import { createListController, renderDetails } from "./list.js";
 import { debounce, populateVintageSelect } from "./utils.js";
@@ -18,6 +26,9 @@ const aboutDialog = document.querySelector("#about-dialog");
 const installDialog = document.querySelector("#install-dialog");
 const installButton = document.querySelector("#install-app");
 const installInstructions = document.querySelector("#install-instructions");
+const exportButton = document.querySelector("#export-data");
+const importButton = document.querySelector("#import-data");
+const importFile = document.querySelector("#import-file");
 let activeSheetId = null;
 let cleanupDetail = () => {};
 let deferredInstallPrompt = null;
@@ -180,6 +191,90 @@ document.querySelector("#detail-back").addEventListener("click", () => {
   cleanupDetail();
   cleanupDetail = () => {};
   showView("home");
+});
+
+async function exportData() {
+  exportButton.disabled = true;
+  try {
+    const sheets = await getAllSheets();
+    if (!sheets.length) {
+      notify("Não há fichas para exportar.", "error");
+      return;
+    }
+    const backup = await createBackup(sheets);
+    downloadBackup(backup);
+    notify(`${sheets.length} ${sheets.length === 1 ? "ficha exportada" : "fichas exportadas"}.`);
+  } catch (error) {
+    console.error(error);
+    notify("Não foi possível exportar os dados. Tente novamente.", "error");
+  } finally {
+    exportButton.disabled = false;
+  }
+}
+
+async function importData(file) {
+  importButton.disabled = true;
+  try {
+    let sheets;
+    try {
+      sheets = await readBackup(file);
+    } catch (error) {
+      console.error(error);
+      notify(error instanceof Error
+        ? error.message
+        : "O arquivo selecionado não é um backup válido.", "error");
+      return;
+    }
+    if (!sheets.length) {
+      notify("O backup selecionado não contém fichas.", "error");
+      return;
+    }
+
+    const currentSheets = await getAllSheets();
+    const currentIds = new Set(currentSheets.map((sheet) => sheet.id));
+    const updatedCount = sheets.filter((sheet) => currentIds.has(sheet.id)).length;
+    const createdCount = sheets.length - updatedCount;
+    const changes = [
+      createdCount ? `${createdCount} ${createdCount === 1 ? "nova ficha" : "novas fichas"}` : "",
+      updatedCount ? `${updatedCount} ${updatedCount === 1 ? "ficha atualizada" : "fichas atualizadas"}` : "",
+    ].filter(Boolean).join(" e ");
+
+    const confirmed = await requestConfirmation({
+      title: "Importar este backup?",
+      copy: `O backup contém ${sheets.length} ${
+        sheets.length === 1 ? "ficha" : "fichas"
+      }: ${changes}. As demais fichas deste dispositivo serão preservadas.`,
+      actionLabel: "Importar dados",
+      danger: false,
+    });
+    if (!confirmed) return;
+
+    await saveSheets(sheets);
+    await refreshSheets();
+    if (!views.detail.classList.contains("hidden") && activeSheetId) {
+      await openDetails(activeSheetId);
+    }
+    notify(`${sheets.length} ${sheets.length === 1 ? "ficha importada" : "fichas importadas"}.`);
+  } catch (error) {
+    console.error(error);
+    notify("Não foi possível salvar as fichas importadas. Verifique o espaço disponível e tente novamente.", "error");
+  } finally {
+    importButton.disabled = false;
+    importFile.value = "";
+  }
+}
+
+exportButton.addEventListener("click", exportData);
+importButton.addEventListener("click", () => {
+  if (formController.isDirty()) {
+    notify("Salve ou cancele as alterações antes de importar um backup.", "error");
+    return;
+  }
+  importFile.click();
+});
+importFile.addEventListener("change", () => {
+  const [file] = importFile.files;
+  if (file) importData(file);
 });
 
 function isRunningStandalone() {

@@ -44,3 +44,8 @@ estático.
 
 Os dados pertencem ao perfil e ao navegador utilizados. Limpar os dados do site
 remove permanentemente as fichas e fotos armazenadas.
+
+Use **Exportar dados** no rodapé para baixar um backup JSON com todas as fichas
+e fotos. Use **Importar dados** para restaurar esse arquivo. A importação
+adiciona ou atualiza fichas com o mesmo identificador e preserva as demais
+fichas existentes no dispositivo.

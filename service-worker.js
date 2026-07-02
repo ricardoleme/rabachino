@@ -1,10 +1,11 @@
-const CACHE_NAME = "rabachino-app-v1";
+const CACHE_NAME = "rabachino-app-v2";
 const APP_SHELL = [
   "./",
   "./index.html",
   "./manifest.webmanifest",
   "./css/styles.css",
   "./js/app.js",
+  "./js/backup.js",
   "./js/db.js",
   "./js/form.js",
   "./js/list.js",

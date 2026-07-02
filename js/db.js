@@ -95,6 +95,13 @@ export function saveSheet(sheet) {
   });
 }
 
+export function saveSheets(sheets) {
+  return withStore("readwrite", async (store) => {
+    await Promise.all(sheets.map((sheet) => requestAsPromise(store.put(sheet))));
+    return sheets;
+  });
+}
+
 export function deleteSheet(id) {
   return withStore("readwrite", (store) => requestAsPromise(store.delete(id)));
 }

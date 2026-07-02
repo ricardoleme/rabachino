@@ -1040,6 +1040,21 @@ legend {
   color: var(--muted);
 }
 
+.footer-actions {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.footer-action svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
 #install-app:disabled {
   cursor: default;
 }
@@ -1183,6 +1198,10 @@ legend {
     align-items: center;
     justify-content: space-between;
     min-height: 3.5rem;
+  }
+
+  .footer-actions {
+    grid-template-columns: repeat(3, auto);
   }
 
   .hero-art {

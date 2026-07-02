@@ -312,9 +312,24 @@
   <footer class="app-footer">
     <div>
       <p>Tenha sua ficha de degustação sempre à mão.</p>
-      <button class="button button-secondary" id="install-app" type="button">
-        Adicionar à tela inicial
-      </button>
+      <div class="footer-actions">
+        <button class="button button-secondary footer-action" id="export-data" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 3v12m0 0 4-4m-4 4-4-4M5 16v4h14v-4" />
+          </svg>
+          Exportar dados
+        </button>
+        <button class="button button-secondary footer-action" id="import-data" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 17V5m0 0-4 4m4-4 4 4M5 16v4h14v-4" />
+          </svg>
+          Importar dados
+        </button>
+        <input id="import-file" type="file" accept=".json,application/json" hidden>
+        <button class="button button-secondary" id="install-app" type="button">
+          Adicionar à tela inicial
+        </button>
+      </div>
     </div>
   </footer>
 
