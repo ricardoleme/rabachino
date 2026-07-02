@@ -1070,6 +1070,12 @@ legend {
   font-size: 1.8rem;
 }
 
+.info-dialog h3 {
+  margin: 1.5rem 0 0.5rem;
+  color: var(--wine-800);
+  font-size: 1.15rem;
+}
+
 .info-dialog address {
   display: grid;
   gap: 0.35rem;
