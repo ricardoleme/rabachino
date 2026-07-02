@@ -58,7 +58,7 @@ html {
 
 body {
   margin: 0;
-  min-width: 320px;
+  min-width: 0;
   background: var(--cream);
   color: var(--ink);
   line-height: 1.5;
@@ -136,6 +136,10 @@ legend {
   position: sticky;
   z-index: 20;
   top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
   padding: 0.6rem max(1rem, calc((100% - var(--content)) / 2));
   border-bottom: 1px solid rgba(255, 255, 255, 0.15);
   background: rgba(59, 13, 30, 0.96);
@@ -176,6 +180,13 @@ legend {
 .brand small {
   color: #ead7dc;
   font-size: 0.75rem;
+}
+
+.header-about {
+  flex: none;
+  border-color: rgba(255, 255, 255, 0.65);
+  background: transparent;
+  color: #fff;
 }
 
 .hero {
@@ -1011,6 +1022,82 @@ legend {
   background: var(--danger);
 }
 
+.app-footer {
+  padding: 1.5rem max(1rem, calc((100% - var(--content)) / 2));
+  border-top: 1px solid var(--line);
+  background: var(--paper);
+}
+
+.app-footer > div {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 1rem;
+}
+
+.app-footer p {
+  margin: 0;
+  color: var(--muted);
+}
+
+#install-app:disabled {
+  cursor: default;
+}
+
+.info-dialog {
+  width: min(30rem, calc(100% - 2rem));
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius);
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 24px 70px rgba(36, 25, 29, 0.35);
+}
+
+.info-dialog::backdrop {
+  background: rgba(40, 8, 19, 0.65);
+  backdrop-filter: blur(3px);
+}
+
+.info-dialog form {
+  position: relative;
+  padding: 2rem;
+}
+
+.info-dialog h2 {
+  margin-bottom: 1rem;
+  color: var(--wine-800);
+  font-size: 1.8rem;
+}
+
+.info-dialog address {
+  display: grid;
+  gap: 0.35rem;
+  font-style: normal;
+}
+
+.info-dialog address a {
+  color: var(--wine-700);
+  overflow-wrap: anywhere;
+}
+
+.dialog-close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: grid;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--wine-700);
+  cursor: pointer;
+  font-size: 1.6rem;
+}
+
 .confirm-dialog {
   width: min(28rem, calc(100% - 2rem));
   padding: 0;
@@ -1083,6 +1170,13 @@ legend {
 
   .hero-copy {
     padding-inline: 2rem;
+  }
+
+  .app-footer > div {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 3.5rem;
   }
 
   .hero-art {
@@ -1176,9 +1270,11 @@ legend {
 
   .skip-link,
   .app-header,
+  .app-footer,
   .view-toolbar,
   .detail-actions,
   .toast-region,
+  .info-dialog,
   .confirm-dialog {
     display: none !important;
   }

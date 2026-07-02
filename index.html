@@ -5,7 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#5a1730">
   <meta name="description" content="Ficha de degustação de vinhos com armazenamento local.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Rabachino — Ficha de Degustação</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/images/Rabachino%20app%20dark.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/images/Rabachino%20app%20dark.svg">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -19,6 +24,7 @@
         <small>Ficha de degustação</small>
       </span>
     </button>
+    <button class="button header-about" id="about-open" type="button">Sobre</button>
   </header>
 
   <main id="main-content">
@@ -303,7 +309,39 @@
     </section>
   </main>
 
+  <footer class="app-footer">
+    <div>
+      <p>Tenha sua ficha de degustação sempre à mão.</p>
+      <button class="button button-secondary" id="install-app" type="button">
+        Adicionar à tela inicial
+      </button>
+    </div>
+  </footer>
+
   <div class="toast-region" id="toast-region" aria-live="polite" aria-atomic="true"></div>
+
+  <dialog class="info-dialog" id="about-dialog" aria-labelledby="about-title">
+    <form method="dialog">
+      <button class="dialog-close" type="submit" aria-label="Fechar">×</button>
+      <p class="eyebrow">Sobre</p>
+      <h2 id="about-title">Ficha de Degustação Rabachino</h2>
+      <p>Desenvolvido por:</p>
+      <address>
+        <strong>Prof. Ms. Ricardo Leme</strong>
+        <a href="mailto:ricardo.leme@gmail.com">ricardo.leme@gmail.com</a>
+      </address>
+    </form>
+  </dialog>
+
+  <dialog class="info-dialog" id="install-dialog" aria-labelledby="install-title">
+    <form method="dialog">
+      <button class="dialog-close" type="submit" aria-label="Fechar">×</button>
+      <p class="eyebrow">Atalho no dispositivo</p>
+      <h2 id="install-title">Adicionar à tela inicial</h2>
+      <p id="install-instructions"></p>
+      <button class="button button-primary" type="submit">Entendi</button>
+    </form>
+  </dialog>
 
   <dialog class="confirm-dialog" id="confirm-dialog">
     <form method="dialog">

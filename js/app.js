@@ -14,8 +14,13 @@ const confirmTitle = document.querySelector("#confirm-title");
 const confirmCopy = document.querySelector("#confirm-copy");
 const confirmAction = document.querySelector("#confirm-action");
 const detailContent = document.querySelector("#detail-content");
+const aboutDialog = document.querySelector("#about-dialog");
+const installDialog = document.querySelector("#install-dialog");
+const installButton = document.querySelector("#install-app");
+const installInstructions = document.querySelector("#install-instructions");
 let activeSheetId = null;
 let cleanupDetail = () => {};
+let deferredInstallPrompt = null;
 
 function showView(name) {
   Object.entries(views).forEach(([key, view]) => view.classList.toggle("hidden", key !== name));
@@ -169,6 +174,7 @@ document.querySelector("#clear-filters").addEventListener("click", () => {
 document.querySelector("#new-sheet").addEventListener("click", () => openForm());
 document.querySelector("#empty-new-sheet").addEventListener("click", () => openForm());
 document.querySelector("#brand-home").addEventListener("click", goHome);
+document.querySelector("#about-open").addEventListener("click", () => aboutDialog.showModal());
 document.querySelector("#detail-back").addEventListener("click", () => {
   activeSheetId = null;
   cleanupDetail();
@@ -176,8 +182,60 @@ document.querySelector("#detail-back").addEventListener("click", () => {
   showView("home");
 });
 
+function isRunningStandalone() {
+  return window.matchMedia("(display-mode: standalone)").matches
+    || window.navigator.standalone === true;
+}
+
+function markAppAsInstalled() {
+  installButton.textContent = "Aplicativo instalado";
+  installButton.disabled = true;
+}
+
+function showInstallInstructions() {
+  const isAppleMobile = /iPad|iPhone|iPod/.test(navigator.userAgent)
+    || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  installInstructions.textContent = isAppleMobile
+    ? "No Safari, toque em Compartilhar e depois em “Adicionar à Tela de Início”."
+    : "Abra o menu do navegador e escolha “Instalar app” ou “Adicionar à tela inicial”.";
+  installDialog.showModal();
+}
+
+window.addEventListener("beforeinstallprompt", (event) => {
+  event.preventDefault();
+  deferredInstallPrompt = event;
+});
+
+window.addEventListener("appinstalled", () => {
+  deferredInstallPrompt = null;
+  markAppAsInstalled();
+  notify("Atalho criado na tela inicial.");
+});
+
+installButton.addEventListener("click", async () => {
+  if (isRunningStandalone()) {
+    markAppAsInstalled();
+    return;
+  }
+  if (!deferredInstallPrompt) {
+    showInstallInstructions();
+    return;
+  }
+
+  deferredInstallPrompt.prompt();
+  await deferredInstallPrompt.userChoice;
+  deferredInstallPrompt = null;
+});
+
+if (isRunningStandalone()) markAppAsInstalled();
+
 window.addEventListener("load", () => {
   document.querySelector("#new-sheet").focus({ preventScroll: true });
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("./service-worker.js").catch((error) => {
+      console.error("Não foi possível ativar o funcionamento offline.", error);
+    });
+  }
 }, { once: true });
 
 window.addEventListener("beforeunload", (event) => {

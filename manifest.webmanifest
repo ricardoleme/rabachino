@@ -1,0 +1,21 @@
+{
+  "id": "./",
+  "name": "Rabachino — Ficha de Degustação",
+  "short_name": "Rabachino",
+  "description": "Registre e consulte fichas de degustação de vinhos no seu dispositivo.",
+  "lang": "pt-BR",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f7f1e8",
+  "theme_color": "#5a1730",
+  "icons": [
+    {
+      "src": "assets/images/Rabachino%20app%20dark.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
