@@ -49,7 +49,7 @@
             <p class="eyebrow">Caderno de vinhos</p>
             <h2 id="saved-title">Últimas fichas</h2>
           </div>
-          <span class="result-count" id="result-count"></span>
+          <span class="result-count" id="result-count" aria-live="polite"></span>
         </div>
 
         <form class="filters" id="filters-form" role="search">
@@ -61,25 +61,55 @@
                 placeholder="Ex.: Malbec ou Miolo">
             </div>
           </div>
-          <div class="field">
-            <label for="filter-type">Tipologia</label>
-            <select id="filter-type" name="tipologia">
-              <option value="">Todas</option>
-              <option value="Branco">Branco</option>
-              <option value="Laranja">Laranja</option>
-              <option value="Rosé">Rosé</option>
-              <option value="Tinto">Tinto</option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="filter-vintage">Safra</label>
-            <select id="filter-vintage" name="safra">
-              <option value="">Todas</option>
-            </select>
-          </div>
-          <button class="button button-quiet clear-filters" id="clear-filters" type="button">
-            Limpar filtros
-          </button>
+          <details class="filter-panel">
+            <summary>
+              <span>Filtros</span>
+              <span class="filter-panel-hint">Tipologia, safra, preço e classificação</span>
+            </summary>
+            <div class="filter-grid">
+              <div class="field">
+                <label for="filter-type">Tipologia</label>
+                <select id="filter-type" name="tipologia">
+                  <option value="">Todas</option>
+                  <option value="Branco">Branco</option>
+                  <option value="Laranja">Laranja</option>
+                  <option value="Rosé">Rosé</option>
+                  <option value="Tinto">Tinto</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="filter-vintage">Safra</label>
+                <select id="filter-vintage" name="safra">
+                  <option value="">Todas</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="filter-price-min">Preço de (R$)</label>
+                <input id="filter-price-min" name="precoDe" type="number" min="0" step="0.01"
+                  inputmode="decimal" placeholder="0,00">
+              </div>
+              <div class="field">
+                <label for="filter-price-max">Preço até (R$)</label>
+                <input id="filter-price-max" name="precoAte" type="number" min="0" step="0.01"
+                  inputmode="decimal" placeholder="150,00">
+              </div>
+              <div class="field">
+                <label for="filter-rating">Classificação</label>
+                <select id="filter-rating" name="classificacao">
+                  <option value="">Todas</option>
+                  <option value="5">5 estrelas</option>
+                  <option value="4">4 estrelas</option>
+                  <option value="3">3 estrelas</option>
+                  <option value="2">2 estrelas</option>
+                  <option value="1">1 estrela</option>
+                  <option value="none">Sem classificação</option>
+                </select>
+              </div>
+              <button class="button button-quiet clear-filters" id="clear-filters" type="button">
+                Limpar filtros
+              </button>
+            </div>
+          </details>
         </form>
 
         <div class="card-grid" id="sheet-list" aria-live="polite" aria-busy="true"></div>

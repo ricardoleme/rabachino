@@ -326,8 +326,18 @@ legend {
 }
 
 .result-count {
-  color: var(--muted);
+  display: inline-flex;
+  min-height: 2rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid #d3b9c1;
+  border-radius: 99rem;
+  background: var(--wine-50);
+  color: var(--wine-800);
   font-size: 0.875rem;
+  font-weight: 750;
+  white-space: nowrap;
 }
 
 .filters {
@@ -339,6 +349,68 @@ legend {
   border-radius: var(--radius);
   background: var(--paper);
   box-shadow: var(--shadow);
+}
+
+.filter-panel {
+  min-width: 0;
+}
+
+.filter-panel summary {
+  display: flex;
+  min-height: 2.85rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid #cbbfc0;
+  border-radius: 0.65rem;
+  background: #fff;
+  color: var(--wine-800);
+  cursor: pointer;
+  font-weight: 750;
+  list-style: none;
+}
+
+.filter-panel summary::-webkit-details-marker {
+  display: none;
+}
+
+.filter-panel summary::after {
+  content: "+";
+  display: grid;
+  width: 1.5rem;
+  height: 1.5rem;
+  flex: none;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--wine-50);
+  color: var(--wine-800);
+  font-weight: 900;
+}
+
+.filter-panel summary > span:first-child {
+  flex: none;
+}
+
+.filter-panel[open] summary::after {
+  content: "−";
+}
+
+.filter-panel-hint {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 500;
+  text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.filter-grid {
+  display: grid;
+  gap: 0.85rem;
+  padding-top: 0.85rem;
 }
 
 .field {
@@ -429,15 +501,15 @@ legend {
 }
 
 .wine-card-rose {
-  --card-background: #fbe8ee;
-  --card-border: #ca8299;
-  --card-tag-background: #fff6f8;
+  --card-background: #fff2f6;
+  --card-border: #e6adc0;
+  --card-tag-background: #fffafd;
 }
 
 .wine-card-tinto {
-  --card-background: #f1dde4;
-  --card-border: #96506a;
-  --card-tag-background: #fff4f7;
+  --card-background: #ead0da;
+  --card-border: #7b314d;
+  --card-tag-background: #f8e8ee;
 }
 
 .wine-card:hover {
@@ -1228,7 +1300,12 @@ legend {
   }
 
   .filters {
-    grid-template-columns: 2fr 1fr 1fr auto;
+    grid-template-columns: minmax(16rem, 1.2fr) minmax(18rem, 1fr);
+    align-items: start;
+  }
+
+  .filter-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     align-items: end;
   }
 

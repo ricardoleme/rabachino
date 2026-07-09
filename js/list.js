@@ -68,6 +68,9 @@ export function createListController({
   searchInput,
   typeSelect,
   vintageSelect,
+  minPriceInput,
+  maxPriceInput,
+  ratingSelect,
   onOpen,
 }) {
   let sheets = [];
@@ -82,6 +85,9 @@ export function createListController({
     const term = normalizeSearch(searchInput.value);
     const type = typeSelect.value;
     const vintage = vintageSelect.value;
+    const minPrice = minPriceInput.value === "" ? null : Number(minPriceInput.value);
+    const maxPrice = maxPriceInput.value === "" ? null : Number(maxPriceInput.value);
+    const rating = ratingSelect.value;
     return sheets.filter((sheet) => {
       const matchesTerm = !term
         || sheet.vinhoBusca?.includes(term)
@@ -91,7 +97,19 @@ export function createListController({
       const matchesType = !type || sheet.tipologia === type;
       const matchesVintage = !vintage
         || (vintage === "none" ? sheet.safra === null : Number(sheet.safra) === Number(vintage));
-      return matchesTerm && matchesType && matchesVintage;
+      const price = Number(sheet.preco);
+      const hasPrice = Number.isFinite(price);
+      const matchesMinPrice = minPrice === null || (hasPrice && price >= minPrice);
+      const matchesMaxPrice = maxPrice === null || (hasPrice && price <= maxPrice);
+      const sheetRating = normalizedRating(sheet.final?.avaliacao);
+      const matchesRating = !rating
+        || (rating === "none" ? sheetRating === null : sheetRating === Number(rating));
+      return matchesTerm
+        && matchesType
+        && matchesVintage
+        && matchesMinPrice
+        && matchesMaxPrice
+        && matchesRating;
     });
   }
 
@@ -152,7 +170,12 @@ export function createListController({
     emptyState.classList.toggle("hidden", filtered.length > 0);
     container.classList.toggle("hidden", filtered.length === 0);
 
-    const hasFilters = searchInput.value || typeSelect.value || vintageSelect.value;
+    const hasFilters = searchInput.value
+      || typeSelect.value
+      || vintageSelect.value
+      || minPriceInput.value
+      || maxPriceInput.value
+      || ratingSelect.value;
     const title = emptyState.querySelector("#empty-title");
     const copy = emptyState.querySelector("#empty-copy");
     const action = emptyState.querySelector("#empty-new-sheet");

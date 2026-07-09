@@ -73,6 +73,9 @@ const listController = createListController({
   searchInput: document.querySelector("#search"),
   typeSelect: document.querySelector("#filter-type"),
   vintageSelect: document.querySelector("#filter-vintage"),
+  minPriceInput: document.querySelector("#filter-price-min"),
+  maxPriceInput: document.querySelector("#filter-price-max"),
+  ratingSelect: document.querySelector("#filter-rating"),
   onOpen: openDetails,
 });
 
@@ -177,6 +180,9 @@ const rerenderFilters = debounce(() => listController.render(), 180);
 document.querySelector("#search").addEventListener("input", rerenderFilters);
 document.querySelector("#filter-type").addEventListener("change", () => listController.render());
 document.querySelector("#filter-vintage").addEventListener("change", () => listController.render());
+document.querySelector("#filter-price-min").addEventListener("input", rerenderFilters);
+document.querySelector("#filter-price-max").addEventListener("input", rerenderFilters);
+document.querySelector("#filter-rating").addEventListener("change", () => listController.render());
 document.querySelector("#clear-filters").addEventListener("click", () => {
   document.querySelector("#filters-form").reset();
   listController.render();

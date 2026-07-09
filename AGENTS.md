@@ -242,6 +242,7 @@ A tela inicial deve permitir:
   vinho ou produtor;
 - filtro por tipologia;
 - filtro por safra, incluindo `Sem Safra`;
+- filtro por faixa de preço (`de` e `até`) e por classificação final;
 - combinação entre texto e filtros;
 - limpar todos os filtros;
 - mensagem clara quando nenhum resultado for encontrado.
@@ -250,6 +251,8 @@ Por padrão, mostrar as fichas mais recentes primeiro. A busca deve reagir duran
 a digitação com um pequeno debounce, sem exigir botão de envio. Para o volume
 esperado de dados locais, é aceitável buscar os registros no IndexedDB e combinar
 os filtros em memória, desde que a UI permaneça responsiva.
+Manter a busca textual visível na tela inicial e deixar os filtros avançados
+recolhidos por padrão, abrindo sob ação explícita do usuário.
 
 Cada cartão da lista deve mostrar, no mínimo, vinho, produtor, tipologia, safra
 ou `Sem Safra`, data da degustação e miniatura da foto quando existir.
