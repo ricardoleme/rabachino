@@ -91,7 +91,9 @@ export function createListController({
   vintageSelect,
   minPriceInput,
   maxPriceInput,
-  ratingSelect,
+  priceError,
+  sparklingOnlyInput,
+  ratingInputs,
   onOpen,
 }) {
   let sheets = [];
@@ -102,13 +104,36 @@ export function createListController({
     objectUrls = [];
   }
 
+  function selectedRatings() {
+    return ratingInputs
+      .filter((input) => input.checked)
+      .map((input) => input.value);
+  }
+
+  function updatePriceRangeMessage(minPrice, maxPrice) {
+    const hasInvalidRange = minPrice !== null && maxPrice !== null && maxPrice < minPrice;
+    const message = "O preço até deve ser maior ou igual ao preço de.";
+
+    priceError.textContent = hasInvalidRange ? message : "";
+    priceError.classList.toggle("hidden", !hasInvalidRange);
+    minPriceInput.toggleAttribute("aria-invalid", hasInvalidRange);
+    maxPriceInput.toggleAttribute("aria-invalid", hasInvalidRange);
+    maxPriceInput.setCustomValidity(hasInvalidRange ? message : "");
+
+    return hasInvalidRange;
+  }
+
   function filteredSheets() {
     const term = normalizeSearch(searchInput.value);
     const type = typeSelect.value;
     const vintage = vintageSelect.value;
     const minPrice = minPriceInput.value === "" ? null : Number(minPriceInput.value);
     const maxPrice = maxPriceInput.value === "" ? null : Number(maxPriceInput.value);
-    const rating = ratingSelect.value;
+    const onlySparkling = sparklingOnlyInput.checked;
+    const ratings = selectedRatings();
+    const hasInvalidPriceRange = updatePriceRangeMessage(minPrice, maxPrice);
+    if (hasInvalidPriceRange) return [];
+
     return sheets.filter((sheet) => {
       const matchesTerm = !term
         || sheet.vinhoBusca?.includes(term)
@@ -123,13 +148,17 @@ export function createListController({
       const matchesMinPrice = minPrice === null || (hasPrice && price >= minPrice);
       const matchesMaxPrice = maxPrice === null || (hasPrice && price <= maxPrice);
       const sheetRating = normalizedRating(sheet.final?.avaliacao);
-      const matchesRating = !rating
-        || (rating === "none" ? sheetRating === null : sheetRating === Number(rating));
+      const matchesSparkling = !onlySparkling || isSparkling(sheet);
+      const matchesRating = ratings.length === 0
+        || ratings.some((rating) => (
+          rating === "none" ? sheetRating === null : sheetRating === Number(rating)
+        ));
       return matchesTerm
         && matchesType
         && matchesVintage
         && matchesMinPrice
         && matchesMaxPrice
+        && matchesSparkling
         && matchesRating;
     });
   }
@@ -197,7 +226,8 @@ export function createListController({
       || vintageSelect.value
       || minPriceInput.value
       || maxPriceInput.value
-      || ratingSelect.value;
+      || sparklingOnlyInput.checked
+      || selectedRatings().length > 0;
     const title = emptyState.querySelector("#empty-title");
     const copy = emptyState.querySelector("#empty-copy");
     const action = emptyState.querySelector("#empty-new-sheet");

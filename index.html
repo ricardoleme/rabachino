@@ -64,7 +64,7 @@
           <details class="filter-panel">
             <summary>
               <span>Filtros</span>
-              <span class="filter-panel-hint">Tipologia, safra, preço e classificação</span>
+              <span class="filter-panel-hint">Tipologia, safra, espumante, preço e classificação</span>
             </summary>
             <div class="filter-grid">
               <div class="field">
@@ -86,25 +86,34 @@
               <div class="field">
                 <label for="filter-price-min">Preço de (R$)</label>
                 <input id="filter-price-min" name="precoDe" type="number" min="0" step="0.01"
-                  inputmode="decimal" placeholder="0,00">
+                  inputmode="decimal" placeholder="0,00" aria-describedby="filter-price-error">
               </div>
               <div class="field">
                 <label for="filter-price-max">Preço até (R$)</label>
                 <input id="filter-price-max" name="precoAte" type="number" min="0" step="0.01"
-                  inputmode="decimal" placeholder="150,00">
+                  inputmode="decimal" placeholder="150,00" aria-describedby="filter-price-error">
+                <small class="field-error hidden" id="filter-price-error" role="alert"></small>
               </div>
               <div class="field">
-                <label for="filter-rating">Classificação</label>
-                <select id="filter-rating" name="classificacao">
-                  <option value="">Todas</option>
-                  <option value="5">5 estrelas</option>
-                  <option value="4">4 estrelas</option>
-                  <option value="3">3 estrelas</option>
-                  <option value="2">2 estrelas</option>
-                  <option value="1">1 estrela</option>
-                  <option value="none">Sem classificação</option>
-                </select>
+                <span class="field-label" id="filter-sparkling-label">Espumante?</span>
+                <label class="switch-control" for="filter-sparkling">
+                  <input id="filter-sparkling" name="espumante" type="checkbox" role="switch"
+                    aria-labelledby="filter-sparkling-label filter-sparkling-state">
+                  <span class="switch-track" aria-hidden="true"><span class="switch-thumb"></span></span>
+                  <span class="switch-state" id="filter-sparkling-state">Apenas espumantes</span>
+                </label>
               </div>
+              <fieldset class="field filter-rating-group">
+                <legend class="field-label">Classificação</legend>
+                <div class="checkbox-list" aria-label="Classificações">
+                  <label><input type="checkbox" name="classificacao" value="5"> 5 estrelas</label>
+                  <label><input type="checkbox" name="classificacao" value="4"> 4 estrelas</label>
+                  <label><input type="checkbox" name="classificacao" value="3"> 3 estrelas</label>
+                  <label><input type="checkbox" name="classificacao" value="2"> 2 estrelas</label>
+                  <label><input type="checkbox" name="classificacao" value="1"> 1 estrela</label>
+                  <label><input type="checkbox" name="classificacao" value="none"> Sem classificação</label>
+                </div>
+              </fieldset>
               <button class="button button-quiet clear-filters" id="clear-filters" type="button">
                 Limpar filtros
               </button>

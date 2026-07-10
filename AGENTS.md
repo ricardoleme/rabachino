@@ -256,7 +256,10 @@ A tela inicial deve permitir:
   vinho ou produtor;
 - filtro por tipologia;
 - filtro por safra, incluindo `Sem Safra`;
-- filtro por faixa de preço (`de` e `até`) e por classificação final;
+- filtro por faixa de preço (`de` e `até`), exibindo mensagem quando `até` for
+  menor que `de`;
+- filtro para exibir apenas fichas espumantes;
+- filtro por uma ou mais classificações finais, incluindo `Sem classificação`;
 - combinação entre texto e filtros;
 - limpar todos os filtros;
 - mensagem clara quando nenhum resultado for encontrado.

@@ -75,7 +75,9 @@ const listController = createListController({
   vintageSelect: document.querySelector("#filter-vintage"),
   minPriceInput: document.querySelector("#filter-price-min"),
   maxPriceInput: document.querySelector("#filter-price-max"),
-  ratingSelect: document.querySelector("#filter-rating"),
+  priceError: document.querySelector("#filter-price-error"),
+  sparklingOnlyInput: document.querySelector("#filter-sparkling"),
+  ratingInputs: [...document.querySelectorAll('input[name="classificacao"]')],
   onOpen: openDetails,
 });
 
@@ -182,7 +184,10 @@ document.querySelector("#filter-type").addEventListener("change", () => listCont
 document.querySelector("#filter-vintage").addEventListener("change", () => listController.render());
 document.querySelector("#filter-price-min").addEventListener("input", rerenderFilters);
 document.querySelector("#filter-price-max").addEventListener("input", rerenderFilters);
-document.querySelector("#filter-rating").addEventListener("change", () => listController.render());
+document.querySelector("#filter-sparkling").addEventListener("change", () => listController.render());
+document.querySelectorAll('input[name="classificacao"]').forEach((input) => {
+  input.addEventListener("change", () => listController.render());
+});
 document.querySelector("#clear-filters").addEventListener("click", () => {
   document.querySelector("#filters-form").reset();
   listController.render();

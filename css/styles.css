@@ -413,6 +413,40 @@ legend {
   padding-top: 0.85rem;
 }
 
+.filter-rating-group {
+  min-width: 0;
+  padding: 0;
+  border: 0;
+}
+
+.filter-rating-group .field-label {
+  padding: 0;
+}
+
+.checkbox-list {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.checkbox-list label {
+  display: flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.62rem 0.7rem;
+  border: 1px solid #cbbfc0;
+  border-radius: 0.65rem;
+  background: #fff;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.checkbox-list input {
+  width: 1.1rem;
+  height: 1.1rem;
+  accent-color: var(--wine-700);
+}
+
 .field {
   min-width: 0;
 }
@@ -446,6 +480,16 @@ legend {
 .field select:focus,
 .field textarea:focus {
   border-color: var(--wine-600);
+}
+
+.field .checkbox-list input {
+  width: 1.1rem;
+  min-height: auto;
+  height: 1.1rem;
+  flex: none;
+  padding: 0;
+  border-radius: 0.2rem;
+  accent-color: var(--wine-700);
 }
 
 .switch-control {
@@ -1380,6 +1424,14 @@ legend {
   .filter-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     align-items: end;
+  }
+
+  .filter-rating-group {
+    grid-column: 1 / -1;
+  }
+
+  .checkbox-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .card-grid {
