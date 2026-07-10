@@ -116,8 +116,13 @@ export function createListController({
 
     priceError.textContent = hasInvalidRange ? message : "";
     priceError.classList.toggle("hidden", !hasInvalidRange);
-    minPriceInput.toggleAttribute("aria-invalid", hasInvalidRange);
-    maxPriceInput.toggleAttribute("aria-invalid", hasInvalidRange);
+    if (hasInvalidRange) {
+      minPriceInput.setAttribute("aria-invalid", "true");
+      maxPriceInput.setAttribute("aria-invalid", "true");
+    } else {
+      minPriceInput.removeAttribute("aria-invalid");
+      maxPriceInput.removeAttribute("aria-invalid");
+    }
     maxPriceInput.setCustomValidity(hasInvalidRange ? message : "");
 
     return hasInvalidRange;

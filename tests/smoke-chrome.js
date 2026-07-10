@@ -290,6 +290,65 @@ async function runBrowserSmoke(client) {
   assert(reloaded.hasCard, "Ficha nao persistiu apos recarregar.");
   assert(reloaded.badge, "Cartao da ficha espumante nao exibiu o icone.");
 
+  await evaluate(client, `
+    (() => {
+      const panel = document.querySelector('.filter-panel');
+      panel.open = true;
+      const setValue = (selector, value) => {
+        const field = document.querySelector(selector);
+        field.value = value;
+        field.dispatchEvent(new Event('input', { bubbles: true }));
+      };
+      setValue('#filter-price-min', '200');
+      setValue('#filter-price-max', '100');
+      return true;
+    })()
+  `);
+  await waitFor(
+    client,
+    "document.querySelector('#filter-price-error')?.textContent.includes('preco ate') || document.querySelector('#filter-price-error')?.textContent.includes('preço até')",
+    "Filtro nao exibiu mensagem para faixa de preco invalida.",
+  );
+  const invalidPriceFilter = await evaluate(client, `
+    ({
+      maxInvalid: document.querySelector('#filter-price-max')?.getAttribute('aria-invalid'),
+      emptyTitle: document.querySelector('#empty-title')?.textContent,
+      visibleError: !document.querySelector('#filter-price-error')?.classList.contains('hidden')
+    })
+  `);
+  assert(invalidPriceFilter.maxInvalid === "true", "Preco ate invalido nao recebeu aria-invalid.");
+  assert(invalidPriceFilter.visibleError, "Mensagem de preco invalido nao ficou visivel.");
+  assert(invalidPriceFilter.emptyTitle === "Nenhuma ficha encontrada", "Faixa de preco invalida nao atualizou o estado da lista.");
+
+  await evaluate(client, `
+    (() => {
+      const setValue = (selector, value) => {
+        const field = document.querySelector(selector);
+        field.value = value;
+        field.dispatchEvent(new Event('input', { bubbles: true }));
+      };
+      setValue('#filter-price-min', '');
+      setValue('#filter-price-max', '');
+      document.querySelector('#filter-sparkling').click();
+      document.querySelector('input[name="classificacao"][value="none"]').click();
+      document.querySelector('input[name="classificacao"][value="5"]').click();
+      return true;
+    })()
+  `);
+  await waitFor(client, "document.querySelector('#sheet-list')?.textContent.includes('Smoke Espumante')", "Filtros combinados nao mantiveram a ficha espumante sem classificacao.");
+  const combinedFilters = await evaluate(client, `
+    ({
+      errorHidden: document.querySelector('#filter-price-error')?.classList.contains('hidden'),
+      sparklingChecked: document.querySelector('#filter-sparkling')?.checked,
+      checkedRatings: [...document.querySelectorAll('input[name="classificacao"]:checked')].map((input) => input.value),
+      hasCard: document.querySelector('#sheet-list')?.textContent.includes('Smoke Espumante')
+    })
+  `);
+  assert(combinedFilters.errorHidden, "Mensagem de preco invalido nao foi removida ao corrigir a faixa.");
+  assert(combinedFilters.sparklingChecked, "Filtro de espumantes nao ficou marcado.");
+  assert(combinedFilters.checkedRatings.includes("none") && combinedFilters.checkedRatings.includes("5"), "Filtro nao permitiu multiplas classificacoes marcadas.");
+  assert(combinedFilters.hasCard, "Ficha espumante sem classificacao nao apareceu com filtros combinados.");
+
   await resetDatabase(client);
 }
 
