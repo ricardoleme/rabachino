@@ -62,6 +62,9 @@ function validateSheet(sheet, index) {
   if (!VALID_TYPES.has(sheet.tipologia)) {
     throw new Error(`A ficha ${position} contém uma tipologia inválida.`);
   }
+  if (sheet.espumante !== undefined && typeof sheet.espumante !== "boolean") {
+    throw new Error(`A ficha ${position} contém uma marcação de espumante inválida.`);
+  }
   if (sheet.safra !== null
     && (!Number.isInteger(sheet.safra)
       || sheet.safra < 1900
@@ -91,6 +94,13 @@ function deserializeSheet(sheet) {
   }
   record.vinhoBusca = normalizeSearch(record.vinho);
   record.produtorBusca = normalizeSearch(record.produtor);
+  record.espumante = typeof record.espumante === "boolean"
+    ? record.espumante
+    : ["continuo", "fino", "longo"].some((key) => (
+      record.visual?.perlage?.[key] !== null
+        && record.visual?.perlage?.[key] !== undefined
+        && record.visual?.perlage?.[key] !== ""
+    ));
   return record;
 }
 

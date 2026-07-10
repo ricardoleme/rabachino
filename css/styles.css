@@ -417,7 +417,8 @@ legend {
   min-width: 0;
 }
 
-.field label {
+.field label,
+.field-label {
   display: block;
   margin-bottom: 0.35rem;
   font-size: 0.85rem;
@@ -445,6 +446,62 @@ legend {
 .field select:focus,
 .field textarea:focus {
   border-color: var(--wine-600);
+}
+
+.switch-control {
+  display: inline-flex !important;
+  min-height: 2.85rem;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0 !important;
+  cursor: pointer;
+}
+
+.switch-control input {
+  position: absolute;
+  opacity: 0;
+}
+
+.switch-track {
+  position: relative;
+  width: 4rem;
+  height: 2.15rem;
+  flex: none;
+  border: 1px solid #cbbfc0;
+  border-radius: 99rem;
+  background: #eee8e7;
+  transition: background-color 160ms ease, border-color 160ms ease;
+}
+
+.switch-thumb {
+  position: absolute;
+  top: 0.2rem;
+  left: 0.2rem;
+  width: 1.65rem;
+  height: 1.65rem;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 7px rgba(36, 25, 29, 0.2);
+  transition: transform 160ms ease;
+}
+
+.switch-control input:checked + .switch-track {
+  border-color: var(--wine-700);
+  background: var(--wine-700);
+}
+
+.switch-control input:checked + .switch-track .switch-thumb {
+  transform: translateX(1.85rem);
+}
+
+.switch-control input:focus-visible + .switch-track {
+  outline: 3px solid #d69a3c;
+  outline-offset: 3px;
+}
+
+.switch-state {
+  color: var(--wine-800);
+  font-weight: 750;
 }
 
 .input-with-icon {
@@ -486,6 +543,17 @@ legend {
   background: var(--card-background);
   box-shadow: 0 8px 20px rgba(59, 13, 30, 0.06);
   transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.sparkling-badge {
+  position: absolute;
+  right: 0.45rem;
+  bottom: 0.45rem;
+  z-index: 2;
+  width: 1.55rem;
+  height: 1.55rem;
+  opacity: 0.9;
+  pointer-events: none;
 }
 
 .wine-card-branco {
@@ -970,6 +1038,7 @@ legend {
 }
 
 .detail-hero {
+  position: relative;
   display: grid;
   overflow: hidden;
   margin-bottom: 1rem;

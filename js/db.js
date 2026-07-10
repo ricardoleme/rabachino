@@ -1,5 +1,5 @@
 const DB_NAME = "rabachino-degustacao";
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 const STORE_NAME = "fichas";
 
 let connectionPromise;
@@ -19,6 +19,32 @@ function transactionDone(transaction) {
   });
 }
 
+function hasPerlageValue(record) {
+  const perlage = record?.visual?.perlage ?? {};
+  return ["continuo", "fino", "longo"].some((key) => (
+    perlage[key] !== null && perlage[key] !== undefined && perlage[key] !== ""
+  ));
+}
+
+function migrateSparklingFlag(store) {
+  const request = store.openCursor();
+  request.addEventListener("success", () => {
+    const cursor = request.result;
+    if (!cursor) return;
+    const record = cursor.value;
+    if (typeof record.espumante !== "boolean") {
+      record.espumante = hasPerlageValue(record);
+      const updateRequest = cursor.update(record);
+      updateRequest.addEventListener("success", () => cursor.continue(), { once: true });
+      updateRequest.addEventListener("error", () => {
+        cursor.source.transaction.abort();
+      }, { once: true });
+      return;
+    }
+    cursor.continue();
+  });
+}
+
 export function openDatabase() {
   if (!("indexedDB" in window)) {
     return Promise.reject(new Error("Este navegador não oferece armazenamento IndexedDB."));
@@ -28,7 +54,7 @@ export function openDatabase() {
   connectionPromise = new Promise((resolve, reject) => {
     const request = indexedDB.open(DB_NAME, DB_VERSION);
 
-    request.addEventListener("upgradeneeded", () => {
+    request.addEventListener("upgradeneeded", (event) => {
       const database = request.result;
       const store = database.objectStoreNames.contains(STORE_NAME)
         ? request.transaction.objectStore(STORE_NAME)
@@ -45,6 +71,10 @@ export function openDatabase() {
       indexes.forEach(([name, keyPath]) => {
         if (!store.indexNames.contains(name)) store.createIndex(name, keyPath);
       });
+
+      if (event.oldVersion < 2) {
+        migrateSparklingFlag(store);
+      }
     });
 
     request.addEventListener("success", () => {

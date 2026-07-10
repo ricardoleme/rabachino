@@ -179,6 +179,17 @@
               <small class="field-error" id="wine-type-error"></small>
             </div>
             <div class="field">
+              <span class="field-label" id="sparkling-label">Espumante?</span>
+              <label class="switch-control" for="sparkling">
+                <input id="sparkling" name="espumante" type="checkbox" role="switch"
+                  aria-labelledby="sparkling-label sparkling-state">
+                <span class="switch-track" aria-hidden="true">
+                  <span class="switch-thumb"></span>
+                </span>
+                <span class="switch-state" id="sparkling-state" data-off="Não" data-on="Sim">Não</span>
+              </label>
+            </div>
+            <div class="field">
               <label for="alcohol">Álcool (%)</label>
               <input id="alcohol" name="alcool" type="number" min="0" max="22" step="0.1"
                 inputmode="decimal" placeholder="13,5">
@@ -238,7 +249,7 @@
             <div class="tri-grid" data-tri-group="visual.limpidez"
               data-options="limpido:Límpido,turvo:Turvo"></div>
           </div>
-          <div class="assessment-group">
+          <div class="assessment-group hidden" id="perlage-group">
             <h3>Perlage — espumantes <small>opcional</small></h3>
             <p class="section-help">Avalie de 1 a 5 ou deixe em branco.</p>
             <div class="rating-list" id="perlage-ratings"></div>

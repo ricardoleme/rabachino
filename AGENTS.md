@@ -108,6 +108,10 @@ somente `-1`, `0` ou `1`.
   aceito por `input[type="date"]`. Não usar UTC para calcular esse padrão.
 - **Vinho**: texto obrigatório.
 - **Tipologia**: seleção obrigatória entre `Branco`, `Rosé` e `Tinto`.
+- **Espumante?**: controle deslizante opcional com valor inicial `Não`. Quando
+  marcado como `Sim`, exibir o quadro de Perlage; quando `Não`, manter Perlage
+  oculto. Registros já existentes com qualquer nota de Perlage devem ser
+  tratados como `Espumante? = Sim`.
 - **Álcool**: número opcional entre `0` e `22`, inclusive; aceitar casas
   decimais e exibir `%`.
 - **Produtor**: texto obrigatório.
@@ -178,6 +182,7 @@ Cada ficha deve seguir esta forma conceitual:
   vinho: "Nome do vinho",
   vinhoBusca: "nome do vinho",
   tipologia: "Tinto",
+  espumante: false,
   alcool: 13.5,
   produtor: "Nome do produtor",
   produtorBusca: "nome do produtor",
@@ -229,6 +234,8 @@ Regras de persistência:
   convertendo para minúsculas.
 - Criar índices para `createdAt`, `updatedAt`, `vinhoBusca`, `produtorBusca`,
   `tipologia` e `safra`.
+- Ao migrar fichas sem o campo `espumante`, definir `true` quando qualquer nota
+  de Perlage estiver preenchida; caso contrário, definir `false`.
 - Fechar transações corretamente e propagar falhas; nunca indicar sucesso antes
   da conclusão da transação.
 - Criar URLs de objeto para fotos somente quando necessário e revogá-las ao
@@ -323,6 +330,9 @@ e persistência deve ser mantida.
 - Todos os descritores aceitam e persistem os estados negativo, neutro e
   positivo.
 - O perlage aceita valores de 1 a 5 e pode voltar ao estado não preenchido.
+- O quadro de Perlage aparece somente quando `Espumante?` está marcado como
+  `Sim`, e fichas espumantes mostram `assets/images/champagne.svg` no canto
+  inferior direito do registro.
 - A foto pode ser adicionada, visualizada, substituída e removida.
 - A busca encontra fichas parcialmente por vinho e produtor, ignorando acentos e
   maiúsculas.

@@ -93,6 +93,14 @@ function readPerlage(form) {
   }));
 }
 
+function emptyPerlage() {
+  return Object.fromEntries(PERLAGE.map(([key]) => [key, null]));
+}
+
+function hasPerlageValue(values = {}) {
+  return PERLAGE.some(([key]) => values[key] !== null && values[key] !== undefined && values[key] !== "");
+}
+
 function setPerlage(form, values = {}) {
   PERLAGE.forEach(([key]) => {
     form.querySelectorAll(`input[name="perlage-${key}"]`).forEach((input) => {
@@ -181,6 +189,8 @@ export function createFormController({
     place: form.querySelector("#place"),
     date: form.querySelector("#date"),
     type: form.querySelector("#wine-type"),
+    sparkling: form.querySelector("#sparkling"),
+    sparklingState: form.querySelector("#sparkling-state"),
     alcohol: form.querySelector("#alcohol"),
     price: form.querySelector("#price"),
     grapes: form.querySelector("#grapes"),
@@ -193,6 +203,7 @@ export function createFormController({
     observations: form.querySelector("#observations"),
     colorGroup: form.querySelector("#color-group"),
     colorHint: form.querySelector("#color-hint"),
+    perlageGroup: form.querySelector("#perlage-group"),
     summary: form.querySelector("#form-error-summary"),
     submit: form.querySelector("#save-sheet"),
   };
@@ -240,6 +251,15 @@ export function createFormController({
       return;
     }
     renderTriGroup(elements.colorGroup, "visual.cor", options, values);
+  }
+
+  function updateSparklingState() {
+    const isSparkling = elements.sparkling.checked;
+    elements.sparkling.setAttribute("aria-checked", String(isSparkling));
+    elements.sparklingState.textContent = isSparkling
+      ? elements.sparklingState.dataset.on
+      : elements.sparklingState.dataset.off;
+    elements.perlageGroup.classList.toggle("hidden", !isSparkling);
   }
 
   async function handleTypeChange() {
@@ -339,6 +359,7 @@ export function createFormController({
       vinho: wine,
       vinhoBusca: normalizeSearch(wine),
       tipologia: elements.type.value,
+      espumante: elements.sparkling.checked,
       alcool: elements.alcohol.value === "" ? null : Number(elements.alcohol.value),
       preco: elements.price.value === "" ? null : Number(elements.price.value),
       uvas: elements.grapes.value.trim(),
@@ -352,7 +373,7 @@ export function createFormController({
       visual: {
         cor: tri.visual?.cor ?? {},
         limpidez: tri.visual?.limpidez ?? {},
-        perlage: readPerlage(form),
+        perlage: elements.sparkling.checked ? readPerlage(form) : emptyPerlage(),
       },
       olfativo: {
         qualidade: tri.olfativo?.qualidade ?? {},
@@ -432,6 +453,10 @@ export function createFormController({
     if (!loading) dirty = true;
   });
   elements.type.addEventListener("change", handleTypeChange);
+  elements.sparkling.addEventListener("change", () => {
+    updateSparklingState();
+    dirty = true;
+  });
   elements.photo.addEventListener("change", handlePhoto);
   elements.removePhoto.addEventListener("click", () => {
     photoBlob = null;
@@ -476,6 +501,8 @@ export function createFormController({
     elements.place.value = sheet?.lugar ?? "Senac Salto";
     elements.date.value = sheet?.data ?? localToday();
     elements.type.value = sheet?.tipologia ?? "";
+    elements.sparkling.checked = Boolean(sheet?.espumante ?? hasPerlageValue(sheet?.visual?.perlage));
+    updateSparklingState();
     elements.alcohol.value = sheet?.alcool ?? "";
     elements.price.value = sheet?.preco ?? "";
     elements.grapes.value = sheet?.uvas ?? "";

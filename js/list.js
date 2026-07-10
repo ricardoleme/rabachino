@@ -9,11 +9,32 @@ import {
   vintageLabel,
 } from "./utils.js";
 
+const CHAMPAGNE_SOURCE = "assets/images/champagne.svg";
+
 function element(tag, className, text) {
   const node = document.createElement(tag);
   if (className) node.className = className;
   if (text !== undefined) node.textContent = text;
   return node;
+}
+
+function hasPerlageValue(sheet) {
+  const perlage = sheet?.visual?.perlage ?? {};
+  return ["continuo", "fino", "longo"].some((key) => (
+    perlage[key] !== null && perlage[key] !== undefined && perlage[key] !== ""
+  ));
+}
+
+function isSparkling(sheet) {
+  return Boolean(sheet?.espumante ?? hasPerlageValue(sheet));
+}
+
+function sparklingBadge() {
+  const badge = element("img", "sparkling-badge");
+  badge.src = CHAMPAGNE_SOURCE;
+  badge.alt = "";
+  badge.loading = "lazy";
+  return badge;
 }
 
 const CARD_TYPE_CLASSES = {
@@ -158,6 +179,7 @@ export function createListController({
     copy.append(meta);
     button.append(visualFrame, copy);
     article.append(button);
+    if (isSparkling(sheet)) article.append(sparklingBadge());
     return article;
   }
 
@@ -285,6 +307,7 @@ export function renderDetails(container, sheet, { onEdit, onDelete }) {
     photo.alt = `Nenhuma foto cadastrada para ${sheet.vinho}`;
   }
   hero.append(photo);
+  if (isSparkling(sheet)) hero.append(sparklingBadge());
 
   const heading = element("div", "detail-heading");
   heading.append(
@@ -313,6 +336,7 @@ export function renderDetails(container, sheet, { onEdit, onDelete }) {
     dataItem("Lugar", sheet.lugar),
     dataItem("Data", formatDate(sheet.data)),
     dataItem("Tipologia", sheet.tipologia),
+    dataItem("Espumante", isSparkling(sheet) ? "Sim" : "Não"),
     dataItem("Álcool", sheet.alcool === null ? "Não informado" : `${sheet.alcool}%`),
     dataItem("Preço", formatCurrency(sheet.preco)),
     dataItem("Uvas", sheet.uvas),
@@ -345,15 +369,21 @@ export function renderDetails(container, sheet, { onEdit, onDelete }) {
     finalRatingBlock(sheet.final?.avaliacao),
   );
 
+  const visualChildren = [
+    assessmentBlock("Cor", sheet.visual?.cor),
+    assessmentBlock("Limpidez", sheet.visual?.limpidez),
+  ];
+  if (isSparkling(sheet)) {
+    visualChildren.push(
+      element("h3", "", "Perlage"),
+      perlageData,
+    );
+  }
+
   const sections = element("div", "detail-sections");
   sections.append(
     detailCard("Informações gerais", [generalData], "half"),
-    detailCard("Exame visual", [
-      assessmentBlock("Cor", sheet.visual?.cor),
-      assessmentBlock("Limpidez", sheet.visual?.limpidez),
-      element("h3", "", "Perlage"),
-      perlageData,
-    ], "half"),
+    detailCard("Exame visual", visualChildren, "half"),
     detailCard("Exame olfativo", [
       assessmentBlock("Qualidade", sheet.olfativo?.qualidade),
       assessmentBlock("Intensidade", sheet.olfativo?.intensidade),
