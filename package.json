@@ -1,0 +1,11 @@
+{
+  "name": "rabachino-degustacao",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Ficha de degustacao Rabachino, buildless e local-first.",
+  "scripts": {
+    "serve": "node scripts/server.js",
+    "check": "node --check js/app.js && node --check js/db.js && node --check js/form.js && node --check js/list.js && node --check js/backup.js && node --check js/tri-state.js && node --check js/utils.js",
+    "test:smoke": "node tests/smoke-chrome.js"
+  }
+}

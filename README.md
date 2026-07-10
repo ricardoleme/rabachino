@@ -29,16 +29,40 @@ Roberto Rabachino.
 ## Executar
 
 Como a aplicação usa módulos ES, sirva a pasta por HTTP em vez de abrir o
-`index.html` diretamente. Uma opção é:
+`index.html` diretamente. A opção recomendada no projeto é:
 
 ```bash
-python -m http.server 8000
+npm run serve
 ```
 
-Depois, acesse `http://localhost:8000`.
+Depois, acesse `http://127.0.0.1:5174`.
 
 Também é possível usar a extensão Live Server do VS Code ou qualquer servidor
 estático.
+
+## Testes
+
+Os scripts de teste não adicionam etapa de build ao app. Para checar a sintaxe
+dos módulos:
+
+```bash
+npm run check
+```
+
+Para executar um smoke test real no Chrome, com perfil temporário isolado:
+
+```bash
+npm run test:smoke
+```
+
+O smoke test serve o app localmente, abre o Chrome por DevTools Protocol, cria
+uma ficha espumante, confirma a persistência no IndexedDB após recarregar e
+remove o perfil temporário ao finalizar. Se o Chrome não estiver no caminho
+padrão, defina `CHROME_PATH` antes de executar.
+
+Neste ambiente Windows, o modo visível é o padrão porque o Chrome headless pode
+encerrar por falha no processo de GPU. Para tentar headless, execute com
+`HEADLESS=1`.
 
 ## Dados locais
 

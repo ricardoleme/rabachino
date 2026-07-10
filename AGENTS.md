@@ -25,6 +25,13 @@ para funcionar depois que seus arquivos forem carregados.
 - Não exigir etapa de build para executar o app.
 - O app deve abrir por `index.html`. Quando módulos ES exigirem servidor local,
   documentar um comando simples para servi-lo.
+- A infraestrutura de testes pode usar scripts Node locais, desde que não crie
+  etapa de build nem dependência runtime para a aplicação.
+- Para validação local, preferir `npm run serve`, `npm run check` e
+  `npm run test:smoke`. O smoke test deve usar Chrome com perfil temporário
+  isolado; usar Edge somente se Chrome não estiver disponível. Neste ambiente
+  Windows, manter o Chrome visível por padrão, pois o modo headless pode encerrar
+  por falha no processo de GPU.
 - Não carregar imagens decorativas, fontes ou scripts de terceiros em tempo de
   execução. Preferir SVGs locais e CSS.
 
