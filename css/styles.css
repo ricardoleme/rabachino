@@ -1304,6 +1304,10 @@ legend {
     align-items: start;
   }
 
+  .filter-panel {
+    align-self: end;
+  }
+
   .filter-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     align-items: end;
